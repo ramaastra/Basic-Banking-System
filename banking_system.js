@@ -21,7 +21,7 @@ class BankAccount {
     };
   }
 
-  deposit(amount) {
+  async deposit(amount) {
     try {
       if (amount <= 0 || typeof amount != 'number') {
         throw new Error('invalid amount to deposit');
@@ -29,35 +29,41 @@ class BankAccount {
 
       this.#balance += amount;
       return `success: deposit with amount ${amount} added to account`;
-
     } catch (error) {
       return `error: ${error.message}`;
     }
   }
 
-  withdraw(amount) {
+  async withdraw(amount) {
     try {
       if (amount <= 0 || typeof amount != 'number') {
         throw new Error('invalid amount to withdraw');
       } else if (amount > this.#balance) {
-        throw new Error(`balance insufficient to withdraw with amount ${amount}`);
+        throw new Error(
+          `balance insufficient to withdraw with amount ${amount}`,
+        );
       }
 
       this.#balance -= amount;
-      return `success: withdrawed ${amount} from account`;
-
+      return `success: withdrawn ${amount} from account`;
     } catch (error) {
       return `error: ${error.message}`;
     }
   }
 }
 
-const myAccount = new BankAccount(customerName='Rama Astra');
+const myAccount = new BankAccount('Rama Astra');
 
-const depositInfo = myAccount.deposit(100000);
-console.log(depositInfo);
+setTimeout(async () => {
+  const depositInfo = await myAccount.deposit(100000);
+  console.log(depositInfo);
+}, 1000);
 
-const withdrawInfo = myAccount.withdraw(50000);
-console.log(withdrawInfo);
+setTimeout(async () => {
+  const withdrawInfo = await myAccount.withdraw(50000);
+  console.log(withdrawInfo);
+}, 1000);
 
-console.log(myAccount.getAccountInfo());
+setTimeout(() => {
+  console.log(myAccount.getAccountInfo());
+}, 1000);
