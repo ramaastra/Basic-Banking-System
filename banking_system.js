@@ -15,55 +15,115 @@ class BankAccount {
 
   getAccountInfo() {
     return {
-      'Account Number': this.#accountNumber,
-      'Customer Name': this.customerName,
-      'Current Balance': this.#balance,
+      accountNumber: this.#accountNumber,
+      customerName: this.customerName,
+      balance: this.#balance
     };
   }
 
   async deposit(amount) {
     try {
       if (amount <= 0 || typeof amount != 'number') {
-        throw new Error('invalid amount to deposit');
+        throw new Error('Jumlah deposit invalid');
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       this.#balance += amount;
-      return `success: deposit with amount ${amount} added to account`;
+      return 'success';
     } catch (error) {
-      return `error: ${error.message}`;
+      return `Penarikan Gagal:\n${error.message}`;
     }
   }
 
   async withdraw(amount) {
     try {
       if (amount <= 0 || typeof amount != 'number') {
-        throw new Error('invalid amount to withdraw');
+        throw new Error('Jumlah penarikan invalid');
       } else if (amount > this.#balance) {
         throw new Error(
-          `balance insufficient to withdraw with amount ${amount}`,
+          `Saldo tidak mencukupi untuk penarikan dengan jumlah Rp${amount}`
         );
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       this.#balance -= amount;
-      return `success: withdrawn ${amount} from account`;
+      return 'success';
     } catch (error) {
-      return `error: ${error.message}`;
+      return `Penarikan Gagal:\n${error.message}`;
     }
   }
 }
 
-const myAccount = new BankAccount('Rama Astra');
+const customerName = window.prompt(
+  '====== Selamat Datang di Bank Binarian! ======\n' +
+    'Masukkan nama Anda untuk membuat rekening bank'
+);
 
-setTimeout(async () => {
-  const depositInfo = await myAccount.deposit(100000);
-  console.log(depositInfo);
-}, 1000);
+const customerAccount = new BankAccount(customerName);
+const customerAccountInfo = customerAccount.getAccountInfo();
+window.alert(
+  'Rekening berhasil dibuat:\n' +
+    `- Nomor Rekening: ${customerAccountInfo.accountNumber}\n` +
+    `- Nama Nasabah: ${customerAccountInfo.customerName}\n` +
+    `- Saldo Saat Ini: Rp${customerAccountInfo.balance}\n`
+);
 
-setTimeout(async () => {
-  const withdrawInfo = await myAccount.withdraw(50000);
-  console.log(withdrawInfo);
-}, 1000);
+async function main() {
+  let selectedMenu;
+  do {
+    const input = window.prompt(
+      '=== Selamat Datang di Bank Binarian! ===\n' +
+        'Silahkan input angka:\n' +
+        '  1. Info rekening\n' +
+        '  2. Deposit\n' +
+        '  3. Tarik tunai\n' +
+        '  4. Keluar\n'
+    );
 
-setTimeout(() => {
-  console.log(myAccount.getAccountInfo());
-}, 1000);
+    selectedMenu = parseInt(input);
+    switch (selectedMenu) {
+      case 1:
+        const customerAccountInfo = customerAccount.getAccountInfo();
+        window.alert(
+          'Informasi rekening:\n' +
+            `- Nomor Rekening: ${customerAccountInfo.accountNumber}\n` +
+            `- Nama Nasabah: ${customerAccountInfo.customerName}\n` +
+            `- Saldo Saat Ini: Rp${customerAccountInfo.balance}\n`
+        );
+        break;
+      case 2:
+        const depositAmount = window.prompt('Masukkan jumlah deposit');
+        const depositInfo = await customerAccount.deposit(
+          parseInt(depositAmount)
+        );
+        if (depositInfo === 'success') {
+          window.alert(`Deposit dengan jumlah Rp${depositAmount} berhasil`);
+        } else {
+          window.alert(depositInfo);
+        }
+        break;
+      case 3:
+        const withdrawAmount = window.prompt('Masukkan jumlah deposit');
+        const withdrawInfo = await customerAccount.withdraw(
+          parseInt(withdrawAmount)
+        );
+        if (withdrawInfo === 'success') {
+          window.alert(`Penarikan dengan jumlah Rp${withdrawAmount} berhasil`);
+        } else {
+          window.alert(withdrawInfo);
+        }
+        break;
+      case 4:
+        alert(
+          'Terima kasih sudah mempercayai Bank Binarian!\n' +
+            '- Dibuat oleh I Putu Rama Astra Arimbawa'
+        );
+        break;
+      default:
+        alert('Gagal input pilihan menu:\nInput invalid');
+        break;
+    }
+  } while (selectedMenu !== 4);
+}
+
+main();
