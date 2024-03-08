@@ -23,7 +23,7 @@ class BankAccount {
 
   async deposit(amount) {
     try {
-      if (amount <= 0 || typeof amount != 'number') {
+      if (amount <= 0 || isNaN(amount)) {
         throw new Error('Jumlah deposit invalid');
       }
 
@@ -37,7 +37,7 @@ class BankAccount {
 
   async withdraw(amount) {
     try {
-      if (amount <= 0 || typeof amount != 'number') {
+      if (amount <= 0 || isNaN(amount)) {
         throw new Error('Jumlah penarikan invalid');
       } else if (amount > this.#balance) {
         throw new Error(
